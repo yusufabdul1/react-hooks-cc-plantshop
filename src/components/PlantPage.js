@@ -1,34 +1,34 @@
-// PlantPage.js
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import NewPlantForm from "./NewPlantForm";
 import PlantList from "./PlantList";
 import Search from "./Search";
 
 function PlantPage() {
-  const [plants, setPlants] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [data, setData] = useState([]);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
-    fetch(" http://localhost:6001/plants")
+    fetch("http://localhost:6001/plants")
       .then((res) => res.json())
-      .then((data) => setPlants(data))
-      .catch((error) => console.error("Error fetching plants:", error));
+      .then((data) => {
+        setData(data);
+      });
   }, []);
 
-  const filteredPlants = plants.filter((plant) =>
-    plant.name.toLowerCase().includes(searchTerm.toLowerCase())
+  let newData = data.filter((item) =>
+    item.name.toLowerCase().includes(search.toLowerCase())
   );
 
+  function addPlant(newPlant) {
+    setData([...data, newPlant]);
+  }
   return (
     <main>
-      <NewPlantForm setPlants={setPlants} />
-      <Search searchTerm={searchTerm} onSearchChange={setSearchTerm} />
-      <PlantList plants={filteredPlants} setPlants={setPlants} />
+      <NewPlantForm addPlant={addPlant} />
+      <Search search={search} setSearch={setSearch} />
+      <PlantList data={newData} />
     </main>
   );
 }
 
-
-
 export default PlantPage;
-
